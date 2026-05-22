@@ -428,4 +428,32 @@ router.get('/me', protect, async (req, res) => {
   }
 });
 
+// @route   GET /api/auth/ration-card/:cardNumber
+// @desc    Get user's ration card by card number (public)
+router.get('/ration-card/:cardNumber', async (req, res) => {
+  try {
+    const { cardNumber } = req.params;
+    if (!cardNumber) {
+      return res.status(400).json({ success: false, message: 'Ration card number is required.' });
+    }
+
+    const user = await User.findOne({
+      rationCardNumber: cardNumber.toUpperCase().trim(),
+      applicationStatus: 'Approved',
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No approved ration card found with this number.',
+      });
+    }
+
+    res.json({ success: true, user: formatUserResponse(user) });
+  } catch (error) {
+    console.error('Ration card query error:', error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again.' });
+  }
+});
+
 module.exports = router;
