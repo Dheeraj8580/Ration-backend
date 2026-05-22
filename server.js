@@ -64,7 +64,10 @@ const seedAdminIfNeeded = async () => {
     console.warn('Admin seed skipped:', err.message);
   }
 };
-
+ 
+app.get("/",(req, res) =>{
+  res.send("server is running successfully")
+})
 // Health check
 app.get('/api/health', (req, res) => {
   const hasResend = !!(process.env.RESEND_API_KEY || '').trim();
